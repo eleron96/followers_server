@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "arduino-subs"
+version = "0.1.0"
+description = ""
+authors = ["nikogamsahurdia <eleron96@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+linkedin-api = "^2.3.1"
+python-dotenv = "^1.0.1"
+flask = "^3.1.0"
+apscheduler = "^3.11.0"
+requests-oauthlib = "^2.0.0"
+linkedin-scraper = "^2.11.5"
+selenium = "^4.28.1"
+google-api-python-client = "^2.160.0"
+google-auth = "^2.38.0"
+google-auth-oauthlib = "^1.2.1"
+google-auth-httplib2 = "^0.2.0"
+beautifulsoup4 = "^4.12.3"
+webdriver-manager = "^4.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
