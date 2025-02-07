@@ -1,6 +1,10 @@
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
+import os
 
-API_KEY = 'AIzaSyCs4p51rJUliIFrP8S52fi7FOl2e6sma1o'
+load_dotenv()
+
+API_KEY = os.getenv("YOUTUBE_CHANNEL")
 CHANNEL_ID = 'UCRhID0powzDpE4D2KuVKGHg'
 
 def get_youtube_subscribers():
