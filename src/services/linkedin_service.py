@@ -8,14 +8,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
 from src.config import Config
-from src.database.linkedin_db import add_linkedin_data, get_latest_linkedin_data, get_followers_over_period
+from src.database.linkedin_db import add_linkedin_data, \
+    get_latest_linkedin_data, get_followers_over_period
 from src.utils.logger import setup_logger
-
+from src.database.linkedin_db import get_daily_followers
 
 logger = setup_logger()
 
 USERNAME = "eleron96@gmail.com"
 PASSWORD = "!Iamluckyman20"
+
 
 def setup_driver(headless=True):
     options = Options()
@@ -30,8 +32,10 @@ def setup_driver(headless=True):
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    driver.execute_script(
+        "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     return driver
+
 
 def linkedin_login(driver, username, password):
     login_url = 'https://www.linkedin.com/login'
@@ -39,7 +43,8 @@ def linkedin_login(driver, username, password):
     driver.get(login_url)
     try:
         wait = WebDriverWait(driver, 20)
-        email_field = wait.until(EC.presence_of_element_located((By.ID, 'username')))
+        email_field = wait.until(
+            EC.presence_of_element_located((By.ID, 'username')))
         password_field = driver.find_element(By.ID, 'password')
         email_field.send_keys(username)
         password_field.send_keys(password)
@@ -50,6 +55,7 @@ def linkedin_login(driver, username, password):
     except Exception as e:
         logger.error(f"Ошибка авторизации: {e}")
         return False
+
 
 def fetch_followers(driver, profile_url):
     logger.info(f"Переход на страницу профиля: {profile_url}")
@@ -63,6 +69,7 @@ def fetch_followers(driver, profile_url):
     logger.warning("Не удалось найти количество подписчиков")
     return None
 
+
 def get_linkedin_followers():
     driver = setup_driver()
     try:
@@ -73,6 +80,7 @@ def get_linkedin_followers():
         driver.quit()
     return None
 
+
 def fetch_and_store_linkedin_data():
     followers_count = get_linkedin_followers()
     if followers_count:
@@ -81,10 +89,12 @@ def fetch_and_store_linkedin_data():
     else:
         logger.warning("Не удалось получить данные LinkedIn.")
 
+
 def get_latest_linkedin(profile_id=None):
     if profile_id is None:
         profile_id = Config.LINKEDIN_PROFILE_ID
     return get_latest_linkedin_data(profile_id)
+
 
 def get_linkedin_statistics(profile_id):
     periods = {
@@ -97,3 +107,6 @@ def get_linkedin_statistics(profile_id):
         trend = get_followers_over_period(profile_id, start_time)
         stats[period] = trend
     return stats
+
+def get_linkedin_daily_stats(profile_id):
+    return get_daily_followers(profile_id)

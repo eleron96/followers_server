@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
     APP_PORT = int(os.getenv("APP_PORT", 8080))
     LINKEDIN_PROFILE_ID = os.getenv("PUBLIC_PROFILE_ID", "default_id")

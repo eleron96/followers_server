@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 def setup_logger(name="followers_logger", level=logging.INFO):
     """Настройка логгера для проекта."""
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')

@@ -1,14 +1,18 @@
 from googleapiclient.discovery import build
 from src.config import Config
 from datetime import datetime, timedelta
-from src.database.youtube_db import add_youtube_data, get_latest_youtube_data, get_subscribers_over_period
+from src.database.youtube_db import add_youtube_data, get_latest_youtube_data, \
+    get_subscribers_over_period
 from src.utils.logger import setup_logger
+from src.database.youtube_db import get_daily_followers
 
 logger = setup_logger()
 
+
 def get_youtube_subscribers():
     youtube = build('youtube', 'v3', developerKey=Config.YOUTUBE_API_KEY)
-    request = youtube.channels().list(part='statistics', id=Config.YOUTUBE_CHANNEL_ID)
+    request = youtube.channels().list(part='statistics',
+                                      id=Config.YOUTUBE_CHANNEL_ID)
     response = request.execute()
     if 'items' in response and len(response['items']) > 0:
         subscribers = int(response['items'][0]['statistics']['subscriberCount'])
@@ -16,6 +20,7 @@ def get_youtube_subscribers():
         return subscribers
     logger.warning("Канал не найден или данные недоступны.")
     return None
+
 
 def fetch_and_store_youtube_data():
     subscribers_count = get_youtube_subscribers()
@@ -25,10 +30,12 @@ def fetch_and_store_youtube_data():
     else:
         logger.warning("Не удалось получить данные YouTube.")
 
+
 def get_latest_youtube(channel_id=None):
     if channel_id is None:
         channel_id = Config.YOUTUBE_CHANNEL_ID
     return get_latest_youtube_data(channel_id)
+
 
 def get_youtube_statistics(channel_id):
     periods = {
@@ -41,3 +48,7 @@ def get_youtube_statistics(channel_id):
         trend = get_subscribers_over_period(channel_id, start_time)
         stats[period] = trend
     return stats
+
+
+def get_youtube_daily_stats(channel_id):
+    return get_daily_followers(channel_id)
