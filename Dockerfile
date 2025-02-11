@@ -28,6 +28,9 @@ COPY cookies.json /app/
 COPY src /app/src
 COPY .env /app/
 
+# Set PYTHONPATH to recognize the 'src' module
+ENV PYTHONPATH=/app
+
 # Create a directory for the database
 RUN mkdir -p /app/db
 

@@ -17,3 +17,8 @@ poetry.lock
 # Исключение IDE-конфигураций
 .idea/
 .vscode/
+
+linkedin_project_files.tar.gz
+linkedin_token_cache.json
+cookies.json
+deploy.sh
