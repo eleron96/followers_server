@@ -25,15 +25,15 @@ stop:
 	-docker stop $(CONTAINER_NAME) || true
 	-docker rm $(CONTAINER_NAME) || true
 
-# Локальный запуск нового контейнера (добавили --shm-size=2g)
+# Локальный запуск нового контейнера с ротацией логов (добавлены --log-driver и --log-opt)
 run: stop build
 	docker run -d --name $(CONTAINER_NAME) \
 		--shm-size=2g \
 		-v /var/lib/followers_data:/var/lib/followers_data \
 		-p $(APP_PORT):$(APP_PORT) \
 		--env-file .env \
+		--log-driver=json-file --log-opt max-size=10m --log-opt max-file=5 \
 		$(IMAGE_NAME)
-
 
 # Локальное обновление (перезапуск контейнера)
 update: run
@@ -59,7 +59,7 @@ deploy: deploy-script
 	@echo "Deploying on remote server..."
 	ssh $(SERVER_USER)@$(SERVER_IP) 'bash -s' < deploy.sh
 
-# Создание скрипта развертывания на удаленном сервере (добавили --shm-size=2g)
+# Создание скрипта развертывания на удаленном сервере
 deploy-script:
 	@echo "Creating deploy script..."
 	@echo 'cd $(REMOTE_DIR)' > deploy.sh
@@ -69,7 +69,9 @@ deploy-script:
 	@echo 'docker rm $(CONTAINER_NAME) || true' >> deploy.sh
 	@echo 'docker run --name $(CONTAINER_NAME) -d --restart always --shm-size=2g \
 		-v /var/lib/followers_data:/var/lib/followers_data \
-		-p $(APP_PORT):$(APP_PORT) --env-file .env $(DOCKER_IMAGE)' >> deploy.sh
+		-p $(APP_PORT):$(APP_PORT) --env-file .env \
+		--log-driver=json-file --log-opt max-size=10m --log-opt max-file=5 \
+		$(DOCKER_IMAGE)' >> deploy.sh
 
 # Очистка временных файлов локально
 clean:

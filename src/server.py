@@ -1,4 +1,5 @@
 from flask import Flask
+
 from src.routes.linkedin_routes import linkedin_blueprint
 from src.routes.youtube_routes import youtube_blueprint
 from src.routes.medium_routes import medium_blueprint
@@ -6,6 +7,7 @@ from src.config import Config
 from src.utils.logger import setup_logger
 import threading
 import time
+
 
 logger = setup_logger()
 

@@ -4,6 +4,18 @@ from datetime import datetime, timedelta
 
 
 def add_linkedin_data(profile_id, followers_count):
+    # Проверяем, является ли followers_count числом
+    try:
+        if isinstance(followers_count, str):
+            followers_count = int(followers_count.replace(',', '').replace(' ', ''))
+        elif not isinstance(followers_count, int):
+            raise ValueError(f"Некорректный формат followers_count: {followers_count}")
+
+    except ValueError as e:
+        print(f"Ошибка при обработке followers_count: {followers_count} для {profile_id} ({e})")
+        return  # Пропускаем запись, если данные некорректны
+
+    # Записываем в базу только корректные значения
     with sqlite3.connect(Config.DATABASES['linkedin']) as conn:
         cursor = conn.cursor()
         cursor.execute("""

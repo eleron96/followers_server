@@ -22,9 +22,8 @@ beautifulsoup4 = "^4.12.3"
 webdriver-manager = "^4.0.2"
 pytest = "^8.3.4"
 
-[tool.poetry.include]
-include = ["src/*", "README.md"]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
