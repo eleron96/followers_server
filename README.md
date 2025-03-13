@@ -31,6 +31,11 @@ curl -X POST "http://194.35.119.49:8090/youtube/update"
 curl -X POST "http://194.35.119.49:8090/medium/update"
 ```
 
+**Instagram**
+```bash
+curl -X POST "http://194.35.119.49:8090/instagram/update"
+```
+
 ---
 
 #### **3. Получение последних данных о подписчиках**
@@ -50,6 +55,11 @@ curl "http://194.35.119.49:8090/youtube/latest?channel_id=UCRhID0powzDpE4D2KuVKG
 curl "http://194.35.119.49:8090/medium/latest?username=Eleron"
 ```
 
+**Instagram**
+```bash
+curl "http://194.35.119.49:8090/instagram/latest?username=nikog_bim"
+```
+
 ---
 
 #### **4. Получение статистики за периоды (24 часа, неделя, месяц)**
@@ -67,6 +77,11 @@ curl "http://194.35.119.49:8090/youtube/statistics?channel_id=UCRhID0powzDpE4D2K
 **Medium**
 ```bash
 curl "http://194.35.119.49:8090/medium/statistics?username=Eleron"
+```
+
+**Instagram**
+```bash
+curl "http://194.35.119.49:8090/instagram/statistics?username=nikog_bim"
 ```
 
 ---
@@ -90,6 +105,11 @@ curl "http://194.35.119.49:8090/youtube/daily-stats?channel_id=UCRhID0powzDpE4D2
 curl "http://194.35.119.49:8090/medium/daily-stats?username=Eleron"
 ```
 
+**Instagram**
+```bash
+curl "http://194.35.119.49:8090/instagram/daily-stats?username=nikog_bim"
+```
+
 ---
 
 ### **Примеры ответов**
@@ -107,8 +127,6 @@ curl "http://194.35.119.49:8090/medium/daily-stats?username=Eleron"
 }
 ```
 
----
-
 #### **Статистика за периоды (YouTube)**
 
 ```json
@@ -121,8 +139,6 @@ curl "http://194.35.119.49:8090/medium/daily-stats?username=Eleron"
   }
 }
 ```
-
----
 
 #### **Ежедневная статистика (Medium)**
 
@@ -138,6 +154,45 @@ curl "http://194.35.119.49:8090/medium/daily-stats?username=Eleron"
 }
 ```
 
+#### **Последние данные о подписчиках (Instagram)**
+
+```json
+{
+  "platform": "instagram",
+  "latest_data": {
+    "count": 1234,
+    "timestamp": "2024-03-13 10:00:00"
+  }
+}
+```
+
+#### **Статистика за периоды (Instagram)**
+
+```json
+{
+  "username": "nikog_bim",
+  "statistics": {
+    "24h": 2.5,
+    "week": 5.8,
+    "month": 15.3
+  }
+}
+```
+
+#### **Ежедневная статистика (Instagram)**
+
+```json
+{
+  "username": "nikog_bim",
+  "daily_stats": [
+    {"date": "2024-02-13", "followers_count": 1200},
+    {"date": "2024-02-14", "followers_count": 1215},
+    {"date": "2024-02-15", "followers_count": 1230},
+    "..."
+  ]
+}
+```
+
 ---
 
 ### **Примечания**
@@ -147,4 +202,4 @@ curl "http://194.35.119.49:8090/medium/daily-stats?username=Eleron"
 - **Параметры запроса:**
   - `profile_id` для LinkedIn
   - `channel_id` для YouTube
-  - `username` для Medium
+  - `username` для Medium и Instagram

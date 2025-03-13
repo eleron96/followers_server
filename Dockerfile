@@ -17,6 +17,7 @@ WORKDIR /app
 # Upgrade pip and install Poetry
 RUN pip install --upgrade pip && pip install poetry
 
+
 # Copy and install dependencies
 COPY pyproject.toml poetry.lock /app/
 RUN poetry install --no-root
