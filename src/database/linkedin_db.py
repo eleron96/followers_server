@@ -49,11 +49,24 @@ def get_followers_over_period(profile_id, start_time):
             ORDER BY timestamp ASC
         """, (profile_id, start_time.strftime('%Y-%m-%d %H:%M:%S')))
         data = cursor.fetchall()
+    
     if len(data) < 2:
         return 0.0
-    start_followers = int(str(data[0][0]).replace(',', '').replace(' ', ''))
-    end_followers = int(str(data[-1][0]).replace(',', '').replace(' ', ''))
-    return round(((end_followers - start_followers) / start_followers) * 100, 2)
+    
+    # Преобразование строк в числа с учетом запятых и пробелов
+    def clean_number(value):
+        if isinstance(value, (int, float)):
+            return float(value)
+        return float(str(value).replace(',', '').replace(' ', ''))
+    
+    start_followers = clean_number(data[0][0])
+    end_followers = clean_number(data[-1][0])
+    
+    if start_followers == 0:
+        return 0.0
+        
+    change_percentage = ((end_followers - start_followers) / start_followers) * 100
+    return round(change_percentage, 2)
 
 
 def get_daily_followers(profile_id):

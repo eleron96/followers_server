@@ -56,11 +56,18 @@ def get_subscribers_over_period(username, start_time):
 def get_daily_followers(username):
     start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
     query = """
-        SELECT DATE(timestamp) as date, MAX(followers_count) as followers_count
-        FROM instagram_followers
-        WHERE username = ? AND DATE(timestamp) >= ?
-        GROUP BY DATE(timestamp)
-        ORDER BY DATE(timestamp)
+        WITH RankedData AS (
+            SELECT 
+                DATE(timestamp) as date,
+                followers_count,
+                ROW_NUMBER() OVER (PARTITION BY DATE(timestamp) ORDER BY timestamp DESC) as rn
+            FROM instagram_followers
+            WHERE username = ? AND DATE(timestamp) >= ?
+        )
+        SELECT date, followers_count
+        FROM RankedData
+        WHERE rn = 1
+        ORDER BY date
     """
     with sqlite3.connect(Config.DATABASES['instagram']) as conn:
         cursor = conn.cursor()

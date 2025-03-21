@@ -61,11 +61,16 @@ def fetch_followers(driver, profile_url):
     logger.info(f"Переход на страницу профиля: {profile_url}")
     driver.get(profile_url)
     soup = BeautifulSoup(driver.page_source, 'html.parser')
-    followers_text = soup.find('span', class_='t-bold')
-    if followers_text:
-        followers = followers_text.get_text(strip=True)
-        logger.info(f"Найдено количество подписчиков: {followers}")
-        return followers
+    
+    # Ищем элемент с количеством подписчиков
+    followers_element = soup.find('a', {'href': '/mynetwork/network-manager/people-follow/followers/'})
+    if followers_element:
+        followers_text = followers_element.find('span', class_='t-bold')
+        if followers_text:
+            followers = followers_text.get_text(strip=True)
+            logger.info(f"Найдено количество подписчиков: {followers}")
+            return followers
+    
     logger.warning("Не удалось найти количество подписчиков")
     return None
 

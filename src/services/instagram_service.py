@@ -5,29 +5,56 @@ from src.database.instagram_db import add_instagram_data, get_latest_instagram_d
     get_subscribers_over_period
 from src.utils.logger import setup_logger
 from src.database.instagram_db import get_daily_followers
+import time
+import os
+import random
 
 logger = setup_logger()
 
 def get_instagram_subscribers():
     try:
-        cl = Client()
-        cl.login(Config.INSTAGRAM_USERNAME, Config.INSTAGRAM_PASSWORD)
-        user_id = cl.user_id_from_username(Config.INSTAGRAM_USERNAME)
-        user_info = cl.user_info(user_id)
+        logger.info("Создаем новый клиент Instagram...")
+        client = Client()
+        
+        logger.info("Попытка авторизации в Instagram...")
+        client.login(Config.INSTAGRAM_USERNAME, Config.INSTAGRAM_PASSWORD)
+        logger.info("Успешная авторизация в Instagram")
+            
+        logger.info("Получаем user_id...")
+        user_id = client.user_id_from_username(Config.INSTAGRAM_USERNAME)
+        logger.info(f"Получен user_id: {user_id}")
+        
+        logger.info("Запрашиваем информацию о пользователе...")
+        user_info = client.user_info(user_id)
         followers_count = user_info.follower_count
         logger.info(f"Количество подписчиков Instagram: {followers_count}")
+        
         return followers_count
     except Exception as e:
         logger.error(f"Ошибка при получении данных Instagram: {str(e)}")
+        # Если это ошибка JSONDecodeError, пробуем еще раз
+        if "JSONDecodeError" in str(e):
+            logger.info("Повторная попытка после JSONDecodeError...")
+            try:
+                time.sleep(2)  # Небольшая задержка
+                user_info = client.user_info(user_id)
+                followers_count = user_info.follower_count
+                logger.info(f"Количество подписчиков Instagram (повторная попытка): {followers_count}")
+                return followers_count
+            except Exception as retry_error:
+                logger.error(f"Ошибка при повторной попытке: {str(retry_error)}")
         return None
 
 def fetch_and_store_instagram_data():
     followers_count = get_instagram_subscribers()
     if followers_count:
+        # Всегда сохраняем данные, даже если количество не изменилось
         add_instagram_data(Config.INSTAGRAM_USERNAME, followers_count)
         logger.info(f"Instagram данные обновлены: {followers_count}")
+        return {"count": followers_count, "timestamp": datetime.now().isoformat()}
     else:
         logger.warning("Не удалось получить данные Instagram.")
+        return None
 
 def get_latest_instagram(username=None):
     if username is None:

@@ -48,7 +48,7 @@ def instagram_background_update():
     while True:
         from src.services.instagram_service import fetch_and_store_instagram_data
         fetch_and_store_instagram_data()
-        time.sleep(3600)
+        time.sleep(18000)
 
 
 if __name__ == "__main__":
